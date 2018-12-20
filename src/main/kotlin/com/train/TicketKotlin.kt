@@ -1,35 +1,26 @@
 package com.train
 
-import java.util.*
 
-class TicketKotlin {
+class TicketKotlin(var count: Int, var roundTirp: Int) {
     val discount = 0.9
     val singlePrice = 1000
     val roundPrice = singlePrice * 2 * discount
 
     fun bookTicket() {
-        print("Please enter number of tickets: ")
-        var sc = Scanner(System.`in`)
-        val total = sc.nextDouble().toInt()
-
-        print("How many round-trip tickets: ")
-        val round = sc.nextDouble().toInt()
-        if (round > total || total < 1 || round < 0) {
+        if (count < roundTirp || count < 0 || roundTirp < 0) {
             println(
-                "輸入票數錯誤:  \n" +
-                        "Total: $total  \n" +
-                        "Round-trip: $round  \n" +
+                "\n" + "輸入票數錯誤:  \n" +
+                        "Total: $count  \n" +
+                        "Round-trip: $roundTirp  \n" +
                         "請重新輸入  \n"
             )
-            bookTicket()
         } else {
             println(
-                ("Total tickets: $total \n" +
-                        "Round-trip: $round \n" +
-                        "Total: ${totalPrice(total, round)} \n")
+                "\n" + "Total tickets: $count \n" +
+                        "Round-trip: $roundTirp \n" +
+                        "Total: ${totalPrice(count, roundTirp)} "
             )
         }
-        sc.close()
     }
 
     fun totalPrice(total: Int, round: Int): Double {

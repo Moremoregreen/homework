@@ -6,27 +6,32 @@ public class Ticket {
     final double discount = 0.9;
     final int singlePrice = 1000;
     final double roundPrice = singlePrice * 2 * discount;
+    private int singleTicketCount;
+    private int roundTripTicketCount = 0;
+    private int ticketCount = 0;
+    boolean check = true;
+
+    public Ticket(int ticketCount, int roundTripTicketCount) {
+        this.roundTripTicketCount = roundTripTicketCount;
+        this.ticketCount = ticketCount;
+        this.singleTicketCount = ticketCount - roundTripTicketCount;
+    }
+
+    public Ticket() {
+    }
 
     protected void bookTicket() {
-        System.out.print("Please enter number of tickets: ");
-        Scanner sc = new Scanner(System.in);
-//        while (true) {
-        int total = (int) sc.nextDouble();
-        System.out.print("How many round-trip tickets: ");
-        int round = (int) sc.nextDouble();
-        if (round > total || total < 1 || round < 0) {
-            System.out.println("輸入票數錯誤:" + "\n" +
-                    "Total:" + total + "\n" +
-                    "Round-trip:" + round + "\n" +
-                    "請重新輸入" + "\n");
-            bookTicket();
+        if (roundTripTicketCount < ticketCount && ticketCount >= 0 && roundTripTicketCount >= 0) {
+            System.out.println("\n" + "Total tickets:" + ticketCount + "\n" +
+                    "Round-trip:" + roundTripTicketCount + "\n" +
+                    "Total:" + totalPrice(ticketCount, roundTripTicketCount) );
         } else {
-            System.out.println("Total tickets:" + total + "\n" +
-                    "Round-trip:" + round + "\n" +
-                    "Total:" + totalPrice(total, round));
+            System.out.println("\n" + "輸入票數錯誤:" + "\n" +
+                    "Total:" + ticketCount + "\n" +
+                    "Round-trip:" + roundTripTicketCount + "\n" +
+                    "請重新輸入" + "\n");
         }
-        sc.close();
-//        }
+
     }
 
     protected double totalPrice(int total, int round) {
