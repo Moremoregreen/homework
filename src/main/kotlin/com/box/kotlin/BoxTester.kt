@@ -1,31 +1,23 @@
 package com.box.kotlin
 
-import java.awt.SystemColor.menu
 import java.io.File
 import java.nio.charset.Charset
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.HashMap
 
+val VERSION =1.1
 val sc = Scanner(System.`in`)
 var menuChoose = 0
-var history = HashMap<LocalDateTime, String?>()
-var box: Box? = null
+var history = HashMap<LocalDateTime, String?>()       //儲存<時間,Box名稱>
+val input = arrayOf("長度：", "寬度：", "高度：")
+val inputData = FloatArray(3)                   //儲存三圍的陣列
 fun main(args: Array<String>) {
-    val input = arrayOf("長度：", "寬度：", "高度：")
-    val inputData = FloatArray(3)
     history.clear()
     println("============歡迎來到郵局便利箱系統============")
     operateMenu(sc)
-    while (menuChoose != -1) {
-        when (menuChoose) {
-            0 -> chooseBox(input, inputData)
-            1 ->showBoxHistory()
-            2 ->showBoxInfo()
-        }
-    }
 }
-
+//清除之前挑選之便利箱紀錄
 private fun clearHistory() {
     var clear = -9
     println("是否清除紀錄? 清除請按 1 ，不清除請按任意鍵。")
@@ -37,7 +29,7 @@ private fun clearHistory() {
     }
     operateMenu(sc)
 }
-
+//印出便利箱紀錄
 private fun showBoxHistory() {
     println("目前記錄" + history.size + "個")
     while (history.size>0){
@@ -49,47 +41,62 @@ private fun showBoxHistory() {
     operateMenu(sc)
 }
 
+//讀取BoxInfo.txt並印出來
 private fun showBoxInfo() {
     println(File("BoxInfo.txt").readText(Charset.forName("UTF-8")) + "\n")
     operateMenu(sc)
-
 }
 
+
 private fun chooseBox(input: Array<String>, inputData: FloatArray) {
+    //詢問並輸儲存三圍
     for (i in input.indices) {
         println("請輸入 ${input[i]}")
         inputData[i] = sc.nextFloat()
     }
-    boxType(inputData[0], inputData[1], inputData[2])
+    //三圍傳入instance並驗證為何種便利箱，再印出其資訊
+    val box = BoxInstance.newInstance(inputData[0], inputData[1], inputData[2])
+    box!!.printInfo()
+//    boxType(inputData[0], inputData[1], inputData[2])
     var chooseTime = LocalDateTime.now()
     history.put(chooseTime, box!!.name)
     operateMenu(sc)
 }
 
-fun boxType(length: Float, width: Float, height: Float): Box? {
-    if (Box5().validate(length, width, height)) {
-        box = Box5()
-    } else if (Box1().validate(length, width, height)) {
-        box = Box1()
-    } else if (Box2().validate(length, width, height)) {
-        box = Box2()
-    } else if (Box3().validate(length, width, height)) {
-        box = Box3()
-    } else if (Box4().validate(length, width, height)) {
-        box = Box4()
-    } else {
-        box = Box()
-    }
-    box!!.printInfo()
-    return box
-}
+//fun boxType(length: Float, width: Float, height: Float): Box? {
+//    if (Box5().validate(length, width, height)) {
+//        box = Box5()
+//    } else if (Box1().validate(length, width, height)) {
+//        box = Box1()
+//    } else if (Box2().validate(length, width, height)) {
+//        box = Box2()
+//    } else if (Box3().validate(length, width, height)) {
+//        box = Box3()
+//    } else if (Box4().validate(length, width, height)) {
+//        box = Box4()
+//    } else {
+//        box = Box()
+//    }
+//    box!!.printInfo()
+//    return box
+//}
 
+
+//選單介面
 fun operateMenu(scanner: Scanner) {
     println(
         "請輸入以下數字進行操作：\n" +
                 "★★★ 挑選便利箱：0  ★★★ 查詢紀錄：1 ★★★ 查看便利箱規格：2 ★★★  離開：-1"
     )
     menuChoose = scanner.nextInt()
+    while (menuChoose != -1) {
+        when (menuChoose) {
+            0 -> chooseBox(input, inputData)
+            1 ->showBoxHistory()
+            2 ->showBoxInfo()
+            else -> print("請輸入正確選項")
+        }
+    }
 }
 
 open class Box(var name: String = "Box", var length: Float = 0.0f, var width: Float = 0.0f, var height: Float = 0.0f) {
@@ -114,3 +121,17 @@ class Box3 : Box("Box3：90cm便利箱 ", 39.5f, 27.5f, 23f)
 class Box4 : Box("Box4：長柱型便利箱 ", 10f, 10f, 62.5f)
 
 class Box5 : Box("Box5：小型便利箱 ", 23f, 14f, 13f)
+
+class BoxInstance{
+    companion object {
+        fun newInstance(length: Float,width: Float,height: Float):Box?=
+                when{
+                    Box5().validate(length, width, height)->Box5()
+                    Box1().validate(length, width, height)->Box1()
+                    Box2().validate(length, width, height)->Box2()
+                    Box4().validate(length, width, height)->Box4()
+                    Box3().validate(length, width, height)->Box3()
+                    else ->null
+                }
+    }
+}
