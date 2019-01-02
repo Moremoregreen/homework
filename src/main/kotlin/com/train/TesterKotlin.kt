@@ -3,7 +3,6 @@ package com.train.kotlin
 import java.util.*
 private val VERSION = 1.2
 fun main(args: Array<String>) {
-    
     var total = 0
     var sc = Scanner(System.`in`)
     while (total != -1) {
@@ -16,7 +15,6 @@ fun main(args: Array<String>) {
             println()
         }
     }
-
     print("你已離開系統")
 
 }
